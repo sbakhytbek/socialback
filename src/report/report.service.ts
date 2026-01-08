@@ -68,9 +68,32 @@ export class ReportService {
     }
 
     // Используем queryBuilder для JOIN с posts
-    const queryBuilder = this.commentsRepo.createQueryBuilder('comment')
-      .leftJoinAndSelect('comment.posts', 'posts') // JOIN с posts через связь
-      .where(whereConditions)
+  const queryBuilder = this.commentsRepo.createQueryBuilder('comment')
+  .leftJoinAndSelect('comment.posts', 'posts')
+  .where(whereConditions);
+
+    // ✅ ФИЛЬТР ПО ДАТЕ
+    if (dto.start_date && dto.end_date) {
+      queryBuilder.andWhere(
+        'comment.created BETWEEN :start AND :end',
+        {
+          start: new Date(dto.start_date),
+          end: new Date(dto.end_date),
+        }
+      );
+    } else if (dto.start_date) {
+      queryBuilder.andWhere(
+        'comment.created >= :start',
+        { start: new Date(dto.start_date) }
+      );
+    } else if (dto.end_date) {
+      queryBuilder.andWhere(
+        'comment.created <= :end',
+        { end: new Date(dto.end_date) }
+      );
+    }
+
+    queryBuilder
       .orderBy('comment.created', 'DESC')
       .skip(skip)
       .take(limit);
