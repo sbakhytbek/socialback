@@ -26,6 +26,6 @@ async function bootstrap() {
   app.use('/media', express.static(join(__dirname, '..', 'media')));
 
   // await app.listen(8888, '192.168.10.49');
-  await app.listen(8888, '192.168.10.148');
+  await app.listen(9595, '192.168.10.148');
 }
 bootstrap();
